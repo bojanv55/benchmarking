@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package me.vukas.benchmarking.dto;
+
+import "me/vukas/benchmarking/dto/MatchDto.proto";
+
+message MatchDtos {
+  repeated MatchDto matches = 1;
+}

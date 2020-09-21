@@ -1,0 +1,9 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+#  datasource:
+#    url: jdbc:mysql://localhost:33306/me_benchmarking?serverTimezone=UTC
+#    username: root
+#    password: 123456

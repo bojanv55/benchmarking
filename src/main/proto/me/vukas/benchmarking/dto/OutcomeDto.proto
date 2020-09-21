@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package me.vukas.benchmarking.dto;
+
+message OutcomeDto {
+  int32 id = 1;
+  double odds = 2;
+  double probability = 3;
+}

@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package me.vukas.benchmarking.dto;
+
+import "me/vukas/benchmarking/dto/MarketDto.proto";
+
+message MatchDto {
+  int32 id = 1;
+  repeated MarketDto markets = 2;
+}
