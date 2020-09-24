@@ -66,9 +66,9 @@
 			<version>4.0.0-rc-2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.openjdk.jmh</groupId>
-			<artifactId>jmh-core</artifactId>
-			<version>${org.openjdk.jmh.version}</version>
+			<groupId>io.protostuff</groupId>
+			<artifactId>protostuff-core</artifactId>
+			<version>1.7.2</version>
 		</dependency>
 
 		<dependency>
@@ -117,11 +117,6 @@
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
 							<version>${lombok.version}</version>
-						</annotationProcessorPath>
-						<annotationProcessorPath>
-							<groupId>org.openjdk.jmh</groupId>
-							<artifactId>jmh-generator-annprocess</artifactId>
-							<version>${org.openjdk.jmh.version}</version>
 						</annotationProcessorPath>
 					</annotationProcessorPaths>
 					<compilerArgs>

@@ -1,9 +1,31 @@
 spring:
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
-#  datasource:
-#    url: jdbc:mysql://localhost:33306/me_benchmarking?serverTimezone=UTC
-#    username: root
-#    password: 123456
+  datasource:
+    url: jdbc:mysql://localhost:33306/me_benchmarking
+    username: root
+    password: 123456
+    schema: classpath:init_table.sql
+    initialization-mode: always
+    hikari:
+      data-source-properties:
+        serverTimezone: UTC
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        useLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
+
+
+  rabbitmq:
+    addresses: ${rabbitmq.addresses:127.0.0.1:35672}
+    username: ${rabbitmq.username:guest}
+    password: ${rabbitmq.password:guest}
+    virtual-host: ${rabbitmq.vhost:/}

@@ -1,4 +1,4 @@
-package me.vukas.benchmarking.cpu;
+package me.vukas.benchmarking.benchmarks;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,35 +18,26 @@ import me.vukas.benchmarking.mapper.MatchMapper;
 import me.vukas.benchmarking.mapper.MatchMapperImpl;
 import me.vukas.benchmarking.mapper.ProtoMatchMapper;
 import me.vukas.benchmarking.mapper.ProtoMatchMapperImpl;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.Param;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
 
-@State(Scope.Benchmark)
-@BenchmarkMode(Mode.AverageTime)
-public class SerializationBenchmarks {
+public class DTOGen {
 
-  @Param("123")
-  public long seed = 123;
-  @Param("123")
   public int numberOfMatches = 123;
 
-  private ObjectMapper objectMapper = new ObjectMapper();
-  private MatchMapper matchMapper = new MatchMapperImpl();
-  private ProtoMatchMapper protoMatchMapper = new ProtoMatchMapperImpl();
-  private RandomGen randomGen = new RandomGen(seed);
+  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final MatchMapper matchMapper = new MatchMapperImpl();
+  private final ProtoMatchMapper protoMatchMapper = new ProtoMatchMapperImpl();
+  private final RandomGen randomGen;
 
-  @Benchmark
+  public DTOGen(RandomGen randomGen) {
+    this.randomGen = randomGen;
+  }
+
   public void mapAndUnmapMatchesJson() throws IOException {
     List<MatchDto> matchDtos = generateMatchesWithJsonSerialization();
     List<Match> matches = matchMapper.matchesDtoToMatches(matchDtos);
     Object x = matchMapper.matchesToMatchesDto(matches);
   }
 
-  @Benchmark
   public List<MatchDto> generateMatchesWithJsonSerialization()
       throws IOException {
     List<MatchDto> matchDtos = generateMatches(numberOfMatches);
@@ -55,20 +46,30 @@ public class SerializationBenchmarks {
     return matchDtos;
   }
 
-  @Benchmark
   public void mapAndUnmapMatchesProto() throws IOException {
     MatchDtos matchDtos = generateMatchesWithProtoSerialization();
     List<Match> matches = protoMatchMapper.matchesDtoToMatches(matchDtos.getMatchesList());
     Object x = protoMatchMapper.matchesToMatchesDto(matches);
   }
 
-  @Benchmark
   public MatchDtos generateMatchesWithProtoSerialization()
       throws IOException {
     MatchDtos matchDtos = generateMatchesProto(numberOfMatches);
     byte[] matchDtosBytes = matchDtos.toByteArray();
     matchDtos = MatchDtos.parseFrom(matchDtosBytes);
     return matchDtos;
+  }
+
+  public byte[] generateMatchesWithProtoSerializationByte()
+      throws IOException {
+    MatchDtos matchDtos = generateMatchesProto(numberOfMatches);
+    return matchDtos.toByteArray();
+  }
+
+  public byte[] generateMatchesWithJsonSerializationByte()
+      throws IOException {
+    List<MatchDto> matchDtos = generateMatches(numberOfMatches);
+    return objectMapper.writeValueAsBytes(matchDtos);
   }
 
   public List<MatchDto> generateMatches(int numberOfMatches){

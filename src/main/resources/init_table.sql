@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS benchmarking_test (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  data MEDIUMBLOB
+);
+
+TRUNCATE TABLE benchmarking_test;
