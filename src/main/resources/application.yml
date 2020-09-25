@@ -3,10 +3,16 @@ spring:
 #    exclude:
 #      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
   datasource:
-    url: jdbc:mysql://localhost:33306/me_benchmarking
-    username: root
-    password: 123456
+    url: ${LcooOddsControlDatabase:jdbc:mysql://localhost:33306/me_benchmarking}
+    username: ${LcooOddsControlUserName:root}
+    password: ${LcooOddsControlPassword:123456}
     schema: classpath:init_table.sql
     initialization-mode: always
     hikari:
@@ -29,3 +35,15 @@ spring:
     username: ${rabbitmq.username:guest}
     password: ${rabbitmq.password:guest}
     virtual-host: ${rabbitmq.vhost:/}
+
+redisi:
+  redis1:
+    host: ${redis.phoenix-lcoo-ctrl.host:127.0.0.1}
+    port: ${redis.phoenix-lcoo-ctrl.port:36379}
+    database: 10
+    password: ${redis.phoenix-lcoo-ctrl.password:123456}
+  redis2:
+    host: ${redis.ctrl-lcoo-cache.host:127.0.0.1}
+    port: ${redis.ctrl-lcoo-cache.port:36379}
+    database: 11
+    password: ${redis.ctrl-lcoo-cache.password:123456}

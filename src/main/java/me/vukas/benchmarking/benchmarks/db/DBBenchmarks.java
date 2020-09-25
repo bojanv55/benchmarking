@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +36,7 @@ public class DBBenchmarks {
 
   static Map<String, Long> len = new HashMap<>();
 
-  private static byte[] gzipCompress(byte[] uncompressedData, String tech) {
+  private static String gzipCompress(byte[] uncompressedData, String tech) {
     StopWatch sw = new StopWatch();
     sw.start();
     byte[] result = new byte[]{};
@@ -49,7 +51,7 @@ public class DBBenchmarks {
     }
     sw.stop();
     len.put(tech, len.getOrDefault(tech, 0L) + sw.getTotalTimeMillis());
-    return result;
+    return Base64.getEncoder().encodeToString(result);
   }
 
   private static byte[] gzipUncompress(byte[] compressedData) {
@@ -76,15 +78,16 @@ public class DBBenchmarks {
 
     randomGen = new RandomGen(seed);
     StopWatch sw = new StopWatch();
-    List<byte[]> messages = new ArrayList<>();
+    List<String> messages = new ArrayList<>();
     for(int i=0; i<ITERATIONS; i++){
       byte[] message = new DTOGen(randomGen).generateMatchesWithJsonSerializationByte();
-      messages.add(message);
+      messages.add(gzipCompress(message, "json"));
     }
     sw.start("json");
     for(int i=0; i<ITERATIONS; i++){
-      jdbcTemplate.update("INSERT INTO benchmarking_test (data) VALUES (?)",
-          (Object) gzipCompress(messages.get(i), "json"));
+      jdbcTemplate.update("INSERT INTO archive_oddschange (bookmakerid,guthmatchid,marketid,typekey,datetime,object) "
+              + "VALUES (?,?,?,?,NOW(),?)",
+           1,i,1,1,messages.get(i));
     }
     sw.stop();
 
@@ -96,12 +99,13 @@ public class DBBenchmarks {
     messages = new ArrayList<>();
     for(int i=0; i<ITERATIONS; i++){
       byte[] message = new DTOGen(randomGen).generateMatchesWithProtoSerializationByte();
-      messages.add(message);
+      messages.add(gzipCompress(message, "proto"));
     }
     sw.start("proto");
     for(int i=0; i<ITERATIONS; i++){
-      jdbcTemplate.update("INSERT INTO benchmarking_test (data) VALUES (?)",
-          (Object) gzipCompress(messages.get(i), "proto"));
+      jdbcTemplate.update("INSERT INTO archive_oddschange (bookmakerid,guthmatchid,marketid,typekey,datetime,object) "
+              + "VALUES (?,?,?,?,NOW(),?)",
+          2,i,1,1,messages.get(i));
     }
     sw.stop();
 
@@ -124,7 +128,7 @@ public class DBBenchmarks {
     System.out.println("TIME TO COMPRESS" + len);
     len = new HashMap<>();
 
-    jdbcTemplate.execute("TRUNCATE TABLE benchmarking_test");
+    jdbcTemplate.execute("DELETE FROM archive_oddschange");
 
   }
 

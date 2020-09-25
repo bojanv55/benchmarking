@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import me.vukas.benchmarking.benchmarks.cpu.CPUBenchmarks;
 import me.vukas.benchmarking.benchmarks.db.DBBenchmarks;
 import me.vukas.benchmarking.benchmarks.rabbit.RabbitBenchmarks;
+import me.vukas.benchmarking.benchmarks.redis.RedisBenchmarks;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -24,6 +25,7 @@ public class ScheduledAll {
   private CPUBenchmarks cpuBenchmarks;
   private RabbitBenchmarks rabbitBenchmarks;
   private DBBenchmarks dbBenchmarks;
+  private RedisBenchmarks redisBenchmarks;
 //  private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
   @Scheduled(fixedDelay = 60_000, initialDelay = 10_000)
@@ -44,6 +46,8 @@ public class ScheduledAll {
 //          });
 //    }
 
+    redisBenchmarks.start1();
+    redisBenchmarks.start2();
     cpuBenchmarks.start();
     rabbitBenchmarks.start();
     dbBenchmarks.start();
